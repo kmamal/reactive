@@ -1,0 +1,33 @@
+{
+  "version": "0.0.2",
+  "name": "@kmamal/reactive",
+  "description": "reactive",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:kmamal/reactive.git"
+  },
+  "scripts": {
+    "test": "./scripts/run-tests.sh",
+    "update-exports": "./scripts/update-exports.sh"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@kmamal/graph": "^0.0.12",
+    "@kmamal/util": "^0.0.91"
+  },
+  "exports": {
+    "./graph": "./src/graph.js",
+    "./": "./src/index.js",
+    "./atom": "./src/atom.js",
+    "./value": "./src/value.js",
+    "./core": "./src/core.js",
+    "./plugins/mapping": "./src/plugins/mapping.js",
+    "./plugins/sequence": "./src/plugins/sequence.js",
+    "./plugins/set": "./src/plugins/set.js",
+    "./plugins/list": "./src/plugins/list.js",
+    "./plugins/array": "./src/plugins/array.js",
+    "./plugins/map": "./src/plugins/map.js",
+    "./plugins/lazy": "./src/plugins/lazy.js",
+    "./calc": "./src/calc.js"
+  }
+}

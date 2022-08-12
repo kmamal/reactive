@@ -1,0 +1,6 @@
+scripts
+**/*.test.js
+**/testing/
+**/_*
+**/NOTES.txt
+package.json~
