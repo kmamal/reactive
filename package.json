@@ -22,5 +22,8 @@
     "./auto-deps": "./src/auto-deps.js",
     "./value": "./src/value.js",
     "./reaction": "./src/reaction.js"
+  },
+  "devDependencies": {
+    "@kmamal/testing": "^0.0.20"
   }
 }
