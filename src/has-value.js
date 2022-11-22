@@ -1,4 +1,4 @@
-const { isEqual } = require('@kmamal/util/object/is-equal')
+const _ = require('@kmamal/util')
 
 class HasValue {
 	constructor (value = null) {
@@ -13,7 +13,7 @@ class HasValue {
 	peek () { return this._value }
 
 	set (value) {
-		if (isEqual(value, this._value)) { return }
+		if (_.isEqual(value, this._value)) { return }
 		this._value = value
 		this._node.triggerChange()
 	}

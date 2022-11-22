@@ -12,8 +12,8 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@kmamal/graph": "^0.0.12",
-    "@kmamal/util": "^0.0.91"
+    "@kmamal/graph": "^0.0.13",
+    "@kmamal/util": "^0.1.6"
   },
   "exports": {
     "./has-value": "./src/has-value.js",

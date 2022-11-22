@@ -1,13 +1,13 @@
-const { extend } = require('../../graph/src/extend')
-const { deriveNodeProps } = require('../../graph/src/extensions/derive-node-props')
-const partialOrder = require('../../graph/src/extensions/derivations/partial-order')
-const downstream = require('../../graph/src/extensions/derivations/propagations/downstream')
-const { sortByPure } = require('@kmamal/util/array/sort')
+const { extend } = require('@kmamal/graph/extend')
+const { deriveNodeProps } = require('@kmamal/graph/extensions/derive-node-props')
+const partialOrder = require('@kmamal/graph/extensions/derivations/partial-order')
+const downstream = require('@kmamal/graph/extensions/derivations/propagations/downstream')
+const { sortBy } = require('@kmamal/util/array/sort')
 
 const EMPTY_MAP = new Map()
 
 const partialOrderProp = partialOrder('_order')
-const getOrder = (x) => -x._order
+const getOrder = (x) => x._order
 
 const hasSourceAndSinkNodes = {
 	_init (next) {
@@ -20,6 +20,9 @@ const hasSourceAndSinkNodes = {
 		next.call(next, node)
 		node._incoming = node instanceof this.SourceNode ? EMPTY_MAP : new Map()
 		node._outgoing = node instanceof this.SinkNode ? EMPTY_MAP : new Map()
+		node._hasChanged = false
+		node._isPending = false
+		node._isInProgress = false
 	},
 }
 
@@ -39,9 +42,9 @@ const reactive = {
 		this.Node.prototype.triggerObserve = triggerObserve
 		this.Node.prototype.triggerChange = triggerChange
 
-		this._changed = new Set()
+		this._changed = []
 		this._pending = []
-		this._pendingSet = new Set()
+		this._shouldSort = false
 		this._inProgress = []
 
 		this._processing = false
@@ -63,35 +66,45 @@ const reactive = {
 	_process () {
 		// console.group("processing")
 
-		const { _changed, _pending, _pendingSet, _inProgress } = this
+		const { _changed, _pending, _inProgress } = this
 		loop: while (this._suspended === 0) {
-			for (const node of _changed) {
-				for (const affected of node.parents()) {
-					if (_pendingSet.has(affected)) { continue }
-					if (!affected._subscribed) { continue }
-
-					_pendingSet.add(affected)
-					_pending.push(affected)
+			if (_changed.length > 0) {
+				for (const node of _changed) {
+					for (const affected of node.parents()) {
+						if (affected._isPending || !affected._subscribed) { continue }
+						this._addPending(affected)
+					}
+					node._hasChanged = false
 				}
+				_changed.length = 0
 			}
-			_changed.clear()
-			sortByPure.$$$(_pending, getOrder)
+
+			if (this._shouldSort) { sortBy.$$$(_pending, getOrder) }
+			this._shouldSort = false
 
 			let current
 			do {
 				if (_pending.length === 0) { break loop }
-				current = _pending.shift()
-				_pendingSet.delete(current)
-			} while (!current._subscribed || _inProgress.includes(current))
+				current = _pending.pop()
+				current._isPending = false
+			} while (!current._subscribed || current._isInProgress)
 
 			// console.log(current._id)
 
 			_inProgress.push(current)
+			current._isInProgress = true
 			current._handleCompute()
-			_inProgress.pop(current)
+			current._isInProgress = false
+			_inProgress.pop()
 		}
 
 		// console.groupEnd()
+	},
+
+	_addPending (next, node) {
+		node._isPending = true
+		this._pending.push(node)
+		this._shouldSort = true
 	},
 
 	setSubscribed (next, node, flag) {
@@ -108,7 +121,8 @@ const reactive = {
 	triggerChange (next, node) {
 		if (!node._subscribed) { return }
 		// console.log('triggerChange', node._id)
-		this._changed.add(node)
+		node._hasChanged = true
+		this._changed.push(node)
 		this._startProcessing()
 	},
 
@@ -146,9 +160,8 @@ const DependencyGraph = extend([
 	hasSourceAndSinkNodes,
 	reactive,
 	propsExtension,
-	//
-	require('../../graph/src/extensions/printable'),
-	require('../../graph/src/extensions/logging'),
+	// require('@kmamal/graph/src/extensions/printable'),
+	// require('@kmamal/graph/src/extensions/logging'),
 ])
 
 module.exports = { DependencyGraph }

@@ -2,23 +2,18 @@
 const onChange = function (prop, value) {
 	if (prop !== '_subscribed') { return }
 
-	if (value) {
-		const graph = this._graph
-
-		if (false
-			|| graph._pendingSet.has(this)
-			|| graph._inProgress.includes(this)
-		) { return }
-
-		graph._pending.push(this)
-		graph._pendingSet.add(this)
-
-		!graph._processing
-			? graph._startProcessing()
-			: graph._process()
-	} else {
-		this._node.remove()
+	if (!value) {
+		this.remove()
+		return
 	}
+
+	if (this._isPending || this._isInProgress) { return }
+
+	const graph = this._graph
+	graph._addPending(this)
+	!graph._processing
+		? graph._startProcessing()
+		: graph._process()
 }
 
 const autoDeps = (node, fnCalc) => {

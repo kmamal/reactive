@@ -8,7 +8,7 @@ class Computed extends HasValue {
 		node._atom = this
 
 		node.onChange = onChange
-		const { compute, addDependency } = autoDeps(this._node, fnCalc)
+		const { compute, addDependency } = autoDeps(node, fnCalc)
 		node._handleCompute = () => {
 			this.set(compute())
 		}

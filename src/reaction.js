@@ -6,12 +6,18 @@ class Reaction {
 		node._atom = this
 
 		node.onChange = onChange
-		const { compute, addDependency } = autoDeps(this._node, fnDeps)
+		const { compute, addDependency } = autoDeps(node, fnDeps)
+		let ignoreDeps
 		node._handleCompute = () => {
+			ignoreDeps = false
 			compute()
+			ignoreDeps = true
 			fnEffect?.()
 		}
-		node._handleObserve = addDependency
+		node._handleObserve = (other) => {
+			if (ignoreDeps) { return }
+			addDependency(other)
+		}
 	}
 
 	subscribe () { this._node.subscribe() }
