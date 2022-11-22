@@ -8,18 +8,18 @@
   },
   "scripts": {
     "test": "./scripts/run-tests.sh",
-    "update-exports": "./scripts/update-exports.sh"
+    "update-exports": "node ./scripts/update-exports.mjs"
   },
   "license": "MIT",
   "dependencies": {
     "@kmamal/graph": "^0.0.13",
     "@kmamal/util": "^0.1.6"
   },
+  "main": "./src/index.js",
   "exports": {
     "./has-value": "./src/has-value.js",
     "./graph": "./src/graph.js",
     "./computed": "./src/computed.js",
-    "./": "./src/index.js",
     "./auto-deps": "./src/auto-deps.js",
     "./value": "./src/value.js",
     "./reaction": "./src/reaction.js"
