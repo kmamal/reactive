@@ -19,6 +19,7 @@
     "./has-value": "./src/has-value.js",
     "./graph": "./src/graph.js",
     "./computed": "./src/computed.js",
+    "./": "./src/index.js",
     "./auto-deps": "./src/auto-deps.js",
     "./value": "./src/value.js",
     "./reaction": "./src/reaction.js"
