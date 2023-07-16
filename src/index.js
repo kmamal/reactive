@@ -6,8 +6,8 @@ const { Reaction } = require('./reaction')
 const makeRealm = () => {
 	const graph = new DependencyGraph()
 
-	const value = (initial) => new Value(graph, initial)
-	const computed = (fnCalc, initial) => new Computed(graph, fnCalc, initial)
+	const value = (initial, fnEq) => new Value(graph, initial, fnEq)
+	const computed = (fnCalc, initial, fnEq) => new Computed(graph, fnCalc, initial, fnEq)
 	const reaction = (fnDeps, fnEffect) => new Reaction(graph, fnDeps, fnEffect)
 
 	return { graph, value, computed, reaction }

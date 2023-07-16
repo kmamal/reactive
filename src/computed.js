@@ -2,8 +2,8 @@ const { HasValue } = require('./has-value')
 const { onChange, autoDeps } = require('./auto-deps')
 
 class Computed extends HasValue {
-	constructor (graph, fnCalc, initial) {
-		super(initial)
+	constructor (graph, fnCalc, initial, fnEq) {
+		super(initial, fnEq)
 		const node = this._node = new graph.Node()
 		node._atom = this
 
