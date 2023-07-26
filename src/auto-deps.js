@@ -35,7 +35,11 @@ const autoDeps = (node, fnCalc) => {
 			}
 
 			if (node.outgoingNum() === 0) {
-				throw new Error("no dependencies")
+				throw Object.assign(new Error("no dependencies"), {
+					atom: node._atom,
+					fnCalc,
+					fnCalcStr: fnCalc.toString(),
+				})
 			}
 
 			return value
